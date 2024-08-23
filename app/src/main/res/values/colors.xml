@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="background_white">#FFFFFFFF</color>
+    <color name="state_checked_true">#FEE24E</color>
+    <color name="corner_edge">#FEE24E</color>
+    <color name="background_yellow">#FEE24E</color>
+    <color name="background_red">#EE3030</color>
+    <color name="state_checked_false">#C8C8C8</color>
+    <color name="background_grey">#C8C8C8</color>
+    <color name="background_light_grey">#e9ecef</color>
+    <color name="background_navBottom">#264653</color>
+    <color name="font_judul">#264653</color>
+    <color name="font_judul_bottomSheet">#006D77</color>
+    <color name="background_button_simpan">#006D77</color>
+    <color name="background_button_ulangi">#11C3D3</color>
+    <color name="font_paragraf">#FF000000</color>
+    <color name="opaqueBG">#61000000</color>
+</resources>

@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Quran Recitation</string>
+    <string name="title_information">Information</string>
+    <string name="title_recite">Recite Quran</string>
+    <string name="title_history">History</string>
+    <string name="tentang_aplikasi">Tentang Aplikasi</string>
+    <string name="cara_menggunakan_aplikasi">Cara Menggunakan Aplikasi</string>
+    <string name="contoh_teks_about_application">Contoh teks About Application</string>
+    <string name="al_ma_idah_109">Al-Ma\'idah (109)</string>
+    <string name="hasil_prediksi">Hasil Prediksi</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="contoh_hasil_paragraf">Text Hasil Paragraf</string>
+    <string name="ayat_latin">qâlû lâ ‘ilma lanâ, innaka anta ‘allâmul-ghuyûb</string>
+    <string name="deskripsi_hasil">Dengan audio yang diberikan hasil yang diberikan adalah...</string>
+    <string name="contoh_teks_perintah">Contoh Teks Perintah</string>
+    <string name="ayat_alMaidah">قَالُوْا لَا عِلْمَ لَنَا ۗ اِنَّكَ اَنْتَ عَلَّامُ الْغُيُوْبِ</string>
+    <string name="tes">قَالُوْا لَا عِلْمَ لَنَا ۗ اِنَّكَ اَنْتَ عَلَّامُ الْغُيُوْبِ</string>
+    <string name="timeText">00/00</string>
+    <string name="text_hasil_akurasi">Text Hasil Akurasi</string>
+    <string name="visualisasi_suara_dengan_mfccs">Visualisasi suara dengan MFCCs</string>
+    <string name="simpan_hasil_di_history">Simpan Hasil di History</string>
+    <string name="ulangi">Ulangi</string>
+    <string name="save_record">Save Record?</string>
+    <string name="cancel">cancel</string>
+    <string name="ok">ok</string>
+    <string name="file_name_here">File Name Here!</string>
+    <string name="meta_here">Meta Here!</string>
+</resources>

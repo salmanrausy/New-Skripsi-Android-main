@@ -3,7 +3,7 @@ package com.example.quranrecitation.data.factory
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.quranrecitation.ui.fragment.recite.ReciteViewModel
+import com.example.quranrecitation.ui.fragment.cnn.CnnViewModel
 
 class ViewModelFactory private constructor(private val mApplication: Application) :
     ViewModelProvider.Factory {
@@ -25,8 +25,8 @@ class ViewModelFactory private constructor(private val mApplication: Application
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(ReciteViewModel::class.java)) {
-            return ReciteViewModel(mApplication) as T
+        if (modelClass.isAssignableFrom(CnnViewModel::class.java)) {
+            return CnnViewModel(mApplication) as T
         }
 
         throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")

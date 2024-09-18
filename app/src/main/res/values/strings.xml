@@ -26,4 +26,7 @@
     <string name="ok">ok</string>
     <string name="file_name_here">File Name Here!</string>
     <string name="meta_here">Meta Here!</string>
+    <string name="model_cnn">Model CNN</string>
+    <string name="model_svm">Model SVM</string>
+    <string name="recite_cnn">Recite CNN</string>
 </resources>

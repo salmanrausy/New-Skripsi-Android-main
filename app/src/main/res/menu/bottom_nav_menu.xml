@@ -7,9 +7,14 @@
         android:title="@string/title_information" />
 
     <item
-        android:id="@+id/navigation_recite"
+        android:id="@+id/navigation_cnn"
         android:icon="@drawable/ic_recite"
-        android:title="@string/title_recite" />
+        android:title="@string/model_cnn" />
+
+    <item
+        android:id="@+id/navigation_svm"
+        android:icon="@drawable/ic_recite"
+        android:title="@string/model_svm" />
 
     <item
         android:id="@+id/navigation_history"

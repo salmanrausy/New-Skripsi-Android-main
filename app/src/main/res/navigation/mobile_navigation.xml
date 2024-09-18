@@ -12,10 +12,16 @@
         tools:layout="@layout/fragment_information" />
 
     <fragment
-        android:id="@+id/navigation_recite"
-        android:name="com.example.quranrecitation.ui.fragment.recite.ReciteFragment"
-        android:label="@string/title_recite"
-        tools:layout="@layout/fragment_recite" />
+        android:id="@+id/navigation_cnn"
+        android:name="com.example.quranrecitation.ui.fragment.cnn.CnnFragment"
+        android:label="@string/recite_cnn"
+        tools:layout="@layout/fragment_cnn" />
+
+    <fragment
+        android:id="@+id/navigation_svm"
+        android:name="com.example.quranrecitation.ui.fragment.svm.SvmFragment"
+        android:label="@string/recite_cnn"
+        tools:layout="@layout/fragment_svm" />
 
     <fragment
         android:id="@+id/navigation_history"

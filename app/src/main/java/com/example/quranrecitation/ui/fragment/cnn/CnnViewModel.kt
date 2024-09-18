@@ -1,4 +1,4 @@
-package com.example.quranrecitation.ui.fragment.recite
+package com.example.quranrecitation.ui.fragment.cnn
 
 import android.app.Application
 import android.content.Context
@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 
-class ReciteViewModel(private val application: Application) : ViewModel() {
+class CnnViewModel(private val application: Application) : ViewModel() {
 
     private val _resultPrediksiSuara = MutableLiveData<BaseResponse>()
     val resultUploadSuara: LiveData<BaseResponse> = _resultPrediksiSuara

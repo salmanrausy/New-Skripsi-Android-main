@@ -1,4 +1,4 @@
-package com.example.quranrecitation.ui.fragment.recite
+package com.example.quranrecitation.ui.fragment.cnn
 
 import android.Manifest
 import android.content.Context
@@ -18,19 +18,16 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
 import com.example.quranrecitation.R
 import com.example.quranrecitation.data.factory.ViewModelFactory
 import com.example.quranrecitation.data.response.BaseResponse
 import com.example.quranrecitation.data.response.ResponsePrediksi
+import com.example.quranrecitation.databinding.FragmentCnnBinding
 import com.example.quranrecitation.feature.Timer
-import com.example.quranrecitation.databinding.FragmentReciteBinding
 import com.example.quranrecitation.room.AppDatabase
 import com.example.quranrecitation.room.AudioRecord
 import com.example.quranrecitation.ui.activity.ResultActivity
@@ -38,9 +35,6 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -56,9 +50,9 @@ import java.util.Locale
 
 const val REQUEST_CODE = 200
 
-class ReciteFragment : Fragment(), Timer.OnTimerTickListener {
+class CnnFragment : Fragment(), Timer.OnTimerTickListener {
 
-    private var _binding: FragmentReciteBinding? = null
+    private var _binding: FragmentCnnBinding? = null
     private lateinit var player: ExoPlayer
     private var duration: Int = 0
     private var Duration = ""
@@ -82,7 +76,7 @@ class ReciteFragment : Fragment(), Timer.OnTimerTickListener {
     private lateinit var amplitudes: ArrayList<Float>
     private lateinit var db: AppDatabase
 
-    private lateinit var reciteViewModel: ReciteViewModel
+    private lateinit var reciteViewModel: CnnViewModel
     private lateinit var responsePrediksi: ResponsePrediksi
     private lateinit var audioRecord: AudioRecord
 
@@ -94,7 +88,7 @@ class ReciteFragment : Fragment(), Timer.OnTimerTickListener {
         savedInstanceState: Bundle?
     ): View {
 
-        _binding = FragmentReciteBinding.inflate(inflater, container, false)
+        _binding = FragmentCnnBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         reciteViewModel = obtainViewModel()
@@ -454,8 +448,8 @@ class ReciteFragment : Fragment(), Timer.OnTimerTickListener {
         handler.removeCallbacksAndMessages(null)
     }
 
-    private fun obtainViewModel(): ReciteViewModel {
+    private fun obtainViewModel(): CnnViewModel {
         val factory = ViewModelFactory.getInstance(requireActivity().application)
-        return ViewModelProvider(requireActivity(), factory)[ReciteViewModel::class.java]
+        return ViewModelProvider(requireActivity(), factory)[CnnViewModel::class.java]
     }
 }

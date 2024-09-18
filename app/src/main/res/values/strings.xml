@@ -29,4 +29,6 @@
     <string name="model_cnn">Model CNN</string>
     <string name="model_svm">Model SVM</string>
     <string name="recite_cnn">Recite CNN</string>
+    <string name="upload_dengan_file"><u>Upload dengan File</u></string>
+
 </resources>

@@ -17,6 +17,7 @@ import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageButton
 import android.widget.SeekBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -70,6 +71,7 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
     private lateinit var buttonRecord: ImageButton
     private lateinit var buttonDone: ImageButton
     private lateinit var buttonDelete: ImageButton
+    private lateinit var tvUploadFile: TextView
 
     private lateinit var vibrator: Vibrator
     private lateinit var timer: Timer

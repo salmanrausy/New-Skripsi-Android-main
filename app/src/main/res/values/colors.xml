@@ -22,4 +22,5 @@
     <color name="background_button_ulangi">#11C3D3</color>
     <color name="font_paragraf">#FF000000</color>
     <color name="opaqueBG">#61000000</color>
+    <color name="dark_blue">#003f88</color>
 </resources>

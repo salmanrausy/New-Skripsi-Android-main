@@ -30,5 +30,8 @@
     <string name="model_svm">Model SVM</string>
     <string name="recite_cnn">Recite CNN</string>
     <string name="upload_dengan_file"><u>Upload dengan File</u></string>
+    <string name="contoh_nama_file_wav">Contoh nama file.wav</string>
+    <string name="batal">Batal</string>
+    <string name="proses">Proses</string>
 
 </resources>

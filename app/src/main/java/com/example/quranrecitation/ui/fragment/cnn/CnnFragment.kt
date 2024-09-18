@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaRecorder
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -15,10 +16,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -32,6 +36,7 @@ import com.example.quranrecitation.feature.Timer
 import com.example.quranrecitation.room.AppDatabase
 import com.example.quranrecitation.room.AudioRecord
 import com.example.quranrecitation.ui.activity.ResultActivity
+import com.example.quranrecitation.util.uriToFile
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -60,6 +65,7 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
     private lateinit var handler: Handler
     private var permissions = arrayOf(Manifest.permission.RECORD_AUDIO)
     private var permissionGranted = false
+    private var getFile: File? = null
 
     private lateinit var recorder: MediaRecorder
     private var dirPath = ""
@@ -72,6 +78,8 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
     private lateinit var buttonDone: ImageButton
     private lateinit var buttonDelete: ImageButton
     private lateinit var tvUploadFile: TextView
+    private lateinit var buttonBatal: Button
+    private lateinit var buttonProses: Button
 
     private lateinit var vibrator: Vibrator
     private lateinit var timer: Timer
@@ -192,6 +200,7 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
         buttonDelete = binding.ButtonDelete
 
         binding.ButtonRecord.setOnClickListener {
+            binding.waveFormView.visibility = View.VISIBLE
             setAnimation()
 
             if (ContextCompat.checkSelfPermission(
@@ -214,6 +223,7 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
         }
 
         binding.ButtonDone.setOnClickListener {
+            binding.waveFormView.visibility = View.GONE
             stopRecording()
 
             binding.progressBar.visibility = View.VISIBLE
@@ -223,19 +233,69 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
 //            showBottomSheet()
         }
 
+        buttonBatal = binding.buttonBatalFile
+        buttonBatal.setOnClickListener {
+            binding.linearButton1.visibility = View.GONE
+            binding.tvFileName.visibility = View.GONE
+            binding.tvFileUpload.setText(getString(R.string.upload_dengan_file))
+        }
+
+        buttonProses = binding.buttonProsesFile
+        buttonProses.setOnClickListener {
+            binding.tvFileUpload.setText(getString(R.string.upload_dengan_file))
+        }
+
         binding.ButtonDelete.setOnClickListener {
+            binding.waveFormView.visibility = View.GONE
             stopRecording()
             File(filePath).delete()
 
             Toast.makeText(requireContext(), "Recorder deleted", Toast.LENGTH_SHORT).show()
         }
+        tvUploadFile = binding.tvFileUpload
+        tvUploadFile.setOnClickListener{
+            startGallery()
+        }
 
+        binding.tvFileName.visibility = View.GONE
         buttonDelete.isClickable = false
         buttonDone.isClickable = false
+        binding.waveFormView.visibility = View.GONE
+        binding.linearButton1.visibility = View.GONE
 
         uploadSuaraProcess()
 
         return root
+    }
+
+    private fun startGallery() {
+        val intent = Intent()
+        intent.action = Intent.ACTION_GET_CONTENT
+        intent.type = "audio/*"
+        val chooser = Intent.createChooser(intent, "Choose audio")
+        launcherIntentGallery.launch(chooser)
+    }
+
+    private val launcherIntentGallery = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == AppCompatActivity.RESULT_OK) {
+            val selectedAudio = result.data?.data as Uri
+
+            selectedAudio.let { uri ->
+                activity.let {
+                    val myFile = uriToFile(uri, it)
+                    getFile = myFile
+                    // Menampilkan nama file atau informasi lainnya jika diperlukan
+                    // Misalnya menampilkan nama file audio
+                    val fileName = myFile.name
+                    binding.tvFileName.visibility = View.VISIBLE
+                    binding.linearButton1.visibility = View.VISIBLE
+                    binding.tvFileName.text = fileName
+                    binding.tvFileUpload.setText("Pilih file yang lain")
+                }
+            }
+        }
     }
 
     private fun prepareUploadSuara() {

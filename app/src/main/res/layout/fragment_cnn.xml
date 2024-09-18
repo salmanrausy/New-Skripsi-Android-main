@@ -196,13 +196,57 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/tv_fileUpload"
+                android:id="@+id/tv_FileName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="32dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/LinearButton"
+                android:text="@string/contoh_nama_file_wav"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:visibility="visible"/>
+
+            <LinearLayout
+                android:id="@+id/linearButton1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_FileName">
+
+                <Button
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/button_batalFile"
+                    android:text="@string/batal"
+                    android:backgroundTint="@color/background_light_grey"
+                    android:textColor="@color/background_red"
+                    android:textStyle="bold"/>
+
+                <Button
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/button_prosesFile"
+                    android:layout_marginStart="12dp"
+                    android:text="@string/proses"
+                    android:backgroundTint="@color/dark_blue"
+                    android:textColor="@color/background_white"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_fileUpload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/linearButton1"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:text="@string/upload_dengan_file"
                 android:textColor="@color/dark_blue"

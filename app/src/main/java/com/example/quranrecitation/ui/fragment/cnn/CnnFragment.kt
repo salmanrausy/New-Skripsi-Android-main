@@ -120,8 +120,10 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
                     Player.STATE_READY -> {
                         if (playWhenReady) {
                             binding.ButtonPlayExample.setImageDrawable(resources.getDrawable(R.drawable.ic_pause))
+                            binding.ButtonRecord.isClickable = false
                         } else {
                             binding.ButtonPlayExample.setImageDrawable(resources.getDrawable(R.drawable.ic_play))
+                            binding.ButtonRecord.isClickable = true
                         }
                     }
 
@@ -131,10 +133,12 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
                         binding.ButtonPlayExample.setImageDrawable(resources.getDrawable(R.drawable.ic_play))
                         binding.seekbar.progress = 0
                         binding.time.text = "0:00 / " + getTimeString(duration)
+                        binding.ButtonRecord.isClickable = true
                     }
 
                     else -> {
                         binding.ButtonPlayExample.setImageDrawable(resources.getDrawable(R.drawable.ic_play))
+                        binding.ButtonRecord.isClickable = false
                     }
                 }
             }
@@ -165,7 +169,9 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
             if (player.playbackState == Player.STATE_ENDED) {
                 player.seekTo(0)
                 player.playWhenReady = true
+//                binding.ButtonRecord.isClickable = true
             } else {
+//                binding.ButtonRecord.isClickable = false
                 player.playWhenReady = !player.playWhenReady
             }
         }
@@ -201,6 +207,7 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
 
         binding.ButtonRecord.setOnClickListener {
             binding.waveFormView.visibility = View.VISIBLE
+            binding.tvFileUpload.visibility = View.GONE
             setAnimation()
 
             if (ContextCompat.checkSelfPermission(
@@ -223,11 +230,15 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
         }
 
         binding.ButtonDone.setOnClickListener {
-            binding.waveFormView.visibility = View.GONE
             stopRecording()
 
             binding.progressBar.visibility = View.VISIBLE
             prepareUploadSuara()
+
+            binding.tvFileUpload.visibility = View.VISIBLE
+            binding.waveFormView.visibility = View.GONE
+            binding.ButtonDone.visibility = View.GONE
+            binding.ButtonDelete.visibility = View.GONE
 
 //            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 //            showBottomSheet()
@@ -237,6 +248,8 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
         buttonBatal.setOnClickListener {
             binding.linearButton1.visibility = View.GONE
             binding.tvFileName.visibility = View.GONE
+            binding.tvTimer.visibility = View.VISIBLE
+            binding.LinearButton.visibility = View.VISIBLE
             binding.tvFileUpload.setText(getString(R.string.upload_dengan_file))
         }
 
@@ -246,15 +259,22 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
         }
 
         binding.ButtonDelete.setOnClickListener {
-            binding.waveFormView.visibility = View.GONE
             stopRecording()
             File(filePath).delete()
 
             Toast.makeText(requireContext(), "Recorder deleted", Toast.LENGTH_SHORT).show()
+
+            binding.waveFormView.visibility = View.GONE
+            binding.tvFileUpload.visibility = View.VISIBLE
+            binding.ButtonDone.visibility = View.GONE
+            binding.ButtonDelete.visibility = View.GONE
         }
+
         tvUploadFile = binding.tvFileUpload
         tvUploadFile.setOnClickListener{
             startGallery()
+            binding.tvTimer.visibility = View.GONE
+            binding.LinearButton.visibility = View.GONE
         }
 
         binding.tvFileName.visibility = View.GONE
@@ -262,6 +282,8 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
         buttonDone.isClickable = false
         binding.waveFormView.visibility = View.GONE
         binding.linearButton1.visibility = View.GONE
+        binding.ButtonDone.visibility = View.GONE
+        binding.ButtonDelete.visibility = View.GONE
 
         uploadSuaraProcess()
 
@@ -380,6 +402,7 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
     }
 
     private fun stopRecording() {
+        binding.ButtonPlayExample.isClickable = true
         timer.stop()
 
         recorder.apply {
@@ -401,6 +424,8 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
     }
 
     private fun pauseRecording() {
+        binding.ButtonPlayExample.isClickable = true
+
         recorder.pause()
         isPause = true
 //        isRecording = false
@@ -415,6 +440,7 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
     }
 
     private fun resumeRecording() {
+        binding.ButtonPlayExample.isClickable = false
         recorder.resume()
         isPause = false
 //        isRecording = false
@@ -440,6 +466,10 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
     }
 
     private fun startRecording() {
+        binding.ButtonPlayExample.isClickable = false
+        binding.ButtonDone.visibility = View.VISIBLE
+        binding.ButtonDelete.visibility = View.VISIBLE
+
         //start recording
         recorder = MediaRecorder()
         dirPath = "${requireContext().externalCacheDir?.absolutePath}/"

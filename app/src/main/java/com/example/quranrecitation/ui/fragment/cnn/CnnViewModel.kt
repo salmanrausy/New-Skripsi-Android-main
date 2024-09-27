@@ -58,15 +58,4 @@ class CnnViewModel(private val application: Application) : ViewModel() {
         return networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
     }
 
-//    private val _textExampleAudio = MutableLiveData<String>().apply {
-//        value = "Tekan tombol Putar untuk memutar contoh suara orang mengaji"
-//    }
-
-//    private val _textRecordRecite = MutableLiveData<String>().apply {
-//        value = "Tekan tombol mikrofon dan lantunkan ayat di atas"
-//    }
-//
-//    val textRecordRecite: LiveData<String> = _textRecordRecite
-
-//    val textExampleAudio: LiveData<String> = _textExampleAudio
 }

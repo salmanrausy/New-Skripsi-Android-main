@@ -18,6 +18,7 @@ import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.ProgressBar
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
@@ -61,7 +62,7 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
     private var _binding: FragmentCnnBinding? = null
     private lateinit var player: ExoPlayer
     private var duration: Int = 0
-    private var Duration = ""
+    private var duration_ = ""
     private lateinit var handler: Handler
     private var permissions = arrayOf(Manifest.permission.RECORD_AUDIO)
     private var permissionGranted = false
@@ -80,6 +81,10 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
     private lateinit var tvUploadFile: TextView
     private lateinit var buttonBatal: Button
     private lateinit var buttonProses: Button
+    private lateinit var tvTime: TextView
+    private lateinit var seekBar: SeekBar
+    private lateinit var buttonPlayExample: ImageButton
+    private lateinit var progressBar: ProgressBar
 
     private lateinit var vibrator: Vibrator
     private lateinit var timer: Timer
@@ -112,6 +117,19 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
         timer = Timer(this)
         vibrator = requireContext().getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
+        //TODO Binding all important id componenet
+        tvTime = binding.time
+        buttonPlayExample = binding.ButtonPlayExample
+        seekBar = binding.seekbar
+        buttonRecord = binding.ButtonRecord
+        buttonDone = binding.ButtonDone
+        buttonDelete = binding.ButtonDelete
+        buttonBatal = binding.buttonBatalFile
+        buttonProses = binding.buttonProsesFile
+        tvUploadFile = binding.tvFileUpload
+        progressBar = binding.progressBar
+
+        //TODO Action untuk aktivitas contoh audio orang mengaji
         player = SimpleExoPlayer.Builder(requireContext()).build()
         player.addListener(object : Player.Listener {
             @Deprecated("Deprecated in Java")
@@ -119,26 +137,31 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
                 when (playbackState) {
                     Player.STATE_READY -> {
                         if (playWhenReady) {
-                            binding.ButtonPlayExample.setImageDrawable(resources.getDrawable(R.drawable.ic_pause))
-                            binding.ButtonRecord.isClickable = false
+                            //TODO Memutar contoh audio
+                            buttonPlayExample.setImageDrawable(resources.getDrawable(R.drawable.ic_pause))
+                            buttonRecord.isClickable = false
+                            tvUploadFile.isClickable = false
                         } else {
-                            binding.ButtonPlayExample.setImageDrawable(resources.getDrawable(R.drawable.ic_play))
-                            binding.ButtonRecord.isClickable = true
+                            //TODO Stop memutar contoh audio
+                            buttonPlayExample.setImageDrawable(resources.getDrawable(R.drawable.ic_play))
+                            buttonRecord.isClickable = true
+                            tvUploadFile.isClickable = true
                         }
                     }
 
                     Player.STATE_ENDED -> {
                         player.playWhenReady = false
                         player.seekTo(0)
-                        binding.ButtonPlayExample.setImageDrawable(resources.getDrawable(R.drawable.ic_play))
-                        binding.seekbar.progress = 0
-                        binding.time.text = "0:00 / " + getTimeString(duration)
-                        binding.ButtonRecord.isClickable = true
+                        buttonPlayExample.setImageDrawable(resources.getDrawable(R.drawable.ic_play))
+                        seekBar.progress = 0
+                        tvTime.text = "0:00 / " + getTimeString(duration)
+                        buttonRecord.isClickable = true
+                        tvUploadFile.isClickable = true
                     }
 
                     else -> {
-                        binding.ButtonPlayExample.setImageDrawable(resources.getDrawable(R.drawable.ic_play))
-                        binding.ButtonRecord.isClickable = false
+                        buttonPlayExample.setImageDrawable(resources.getDrawable(R.drawable.ic_play))
+                        buttonRecord.isClickable = false
                     }
                 }
             }
@@ -146,16 +169,16 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 if (isPlaying) {
                     duration = player.duration.toInt() / 1000
-                    binding.seekbar.max = duration
-                    binding.time.text = "0:00 / " + getTimeString(duration)
+                    seekBar.max = duration
+                    tvTime.text = "0:00 / " + getTimeString(duration)
                 }
             }
 
             override fun onPlaybackStateChanged(playbackState: Int) {
                 if (playbackState == Player.STATE_BUFFERING) {
-                    binding.progressBar.visibility = View.VISIBLE
+                    progressBar.visibility = View.VISIBLE
                 } else {
-                    binding.progressBar.visibility = View.GONE
+                    progressBar.visibility = View.GONE
                 }
             }
         })
@@ -165,7 +188,7 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
         player.setMediaItem(mediaItem)
         player.prepare()
 
-        binding.ButtonPlayExample.setOnClickListener {
+        buttonPlayExample.setOnClickListener {
             if (player.playbackState == Player.STATE_ENDED) {
                 player.seekTo(0)
                 player.playWhenReady = true
@@ -176,7 +199,7 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
             }
         }
 
-        binding.seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
                     player.seekTo((progress * 1000).toLong())
@@ -190,22 +213,22 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
         })
 
         handler = Handler(Looper.getMainLooper())
-        handler.post(object : Runnable {
-            override fun run() {
-                val currentPosition = player.currentPosition.toInt() / 1000
-                binding.seekbar.progress = currentPosition
-                binding.time.text = getTimeString(currentPosition) + "/" + getTimeString(duration)
-                handler.postDelayed(this, 1000)
-            }
-        })
+        handler.post(
+            object : Runnable {
+                override fun run() {
+                    val currentPosition = player.currentPosition.toInt() / 1000
+                    binding.seekbar.progress = currentPosition
+                    binding.time.text =
+                        getTimeString(currentPosition) + "/" + getTimeString(duration)
+                    handler.postDelayed(this, 1000)
+                }
+            },
+        )
 
         player.repeatMode = Player.REPEAT_MODE_OFF
 
-        buttonRecord = binding.ButtonRecord
-        buttonDone = binding.ButtonDone
-        buttonDelete = binding.ButtonDelete
-
-        binding.ButtonRecord.setOnClickListener {
+        //TODO action button untuk proses dari perekaman
+        buttonRecord.setOnClickListener {
             binding.waveFormView.visibility = View.VISIBLE
             binding.tvFileUpload.visibility = View.GONE
             setAnimation()
@@ -229,7 +252,7 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
             vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
         }
 
-        binding.ButtonDone.setOnClickListener {
+        buttonDone.setOnClickListener {
             stopRecording()
 
             binding.progressBar.visibility = View.VISIBLE
@@ -240,25 +263,10 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
             binding.ButtonDone.visibility = View.GONE
             binding.ButtonDelete.visibility = View.GONE
 
-//            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-//            showBottomSheet()
+            uploadSuaraProcess()
         }
 
-        buttonBatal = binding.buttonBatalFile
-        buttonBatal.setOnClickListener {
-            binding.linearButton1.visibility = View.GONE
-            binding.tvFileName.visibility = View.GONE
-            binding.tvTimer.visibility = View.VISIBLE
-            binding.LinearButton.visibility = View.VISIBLE
-            binding.tvFileUpload.setText(getString(R.string.upload_dengan_file))
-        }
-
-        buttonProses = binding.buttonProsesFile
-        buttonProses.setOnClickListener {
-            binding.tvFileUpload.setText(getString(R.string.upload_dengan_file))
-        }
-
-        binding.ButtonDelete.setOnClickListener {
+        buttonDelete.setOnClickListener {
             stopRecording()
             File(filePath).delete()
 
@@ -270,11 +278,21 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
             binding.ButtonDelete.visibility = View.GONE
         }
 
-        tvUploadFile = binding.tvFileUpload
+        //TODO Action Button untuk proses suara dari file local
+        buttonBatal.setOnClickListener {
+            binding.linearButton1.visibility = View.GONE
+            binding.tvFileName.visibility = View.GONE
+            binding.tvTimer.visibility = View.VISIBLE
+            binding.LinearButton.visibility = View.VISIBLE
+            binding.tvFileUpload.text = getString(R.string.upload_dengan_file)
+        }
+
+        buttonProses.setOnClickListener {
+            binding.tvFileUpload.text = getString(R.string.upload_dengan_file)
+        }
+
         tvUploadFile.setOnClickListener{
             startGallery()
-            binding.tvTimer.visibility = View.GONE
-            binding.LinearButton.visibility = View.GONE
         }
 
         binding.tvFileName.visibility = View.GONE
@@ -285,7 +303,7 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
         binding.ButtonDone.visibility = View.GONE
         binding.ButtonDelete.visibility = View.GONE
 
-        uploadSuaraProcess()
+//        uploadSuaraProcess()
 
         return root
     }
@@ -314,7 +332,9 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
                     binding.tvFileName.visibility = View.VISIBLE
                     binding.linearButton1.visibility = View.VISIBLE
                     binding.tvFileName.text = fileName
-                    binding.tvFileUpload.setText("Pilih file yang lain")
+                    binding.tvFileUpload.text = "Pilih file yang lain"
+                    binding.tvTimer.visibility = View.GONE
+                    binding.LinearButton.visibility = View.GONE
                 }
             }
         }
@@ -373,19 +393,19 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
     }
 
     private fun save() {
-        var timeStamp = Date().time
-        var ampsPath = "$dirPath$fileName"
+        val timeStamp = Date().time
+        val ampsPath = "$dirPath$fileName"
 
         try {
-            var fos = FileOutputStream(ampsPath)
-            var out = ObjectOutputStream(fos)
+            val fos = FileOutputStream(ampsPath)
+            val out = ObjectOutputStream(fos)
             out.writeObject(amplitudes)
             fos.close()
             out.close()
         } catch (e: IOException) {
         }
 
-        audioRecord = AudioRecord(fileName, filePath, timeStamp, Duration, ampsPath)
+        audioRecord = AudioRecord(fileName, filePath, timeStamp, duration_, ampsPath)
 
         GlobalScope.launch {
             db.audioRecordDao().insert(audioRecord)
@@ -474,8 +494,8 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
         recorder = MediaRecorder()
         dirPath = "${requireContext().externalCacheDir?.absolutePath}/"
 
-        var simpleDateFormat = SimpleDateFormat("yyyy.MM.dd_hh.mm.ss", Locale.getDefault())
-        var date = simpleDateFormat.format(Date())
+        val simpleDateFormat = SimpleDateFormat("yyyy.MM.dd_hh.mm.ss", Locale.getDefault())
+        val date = simpleDateFormat.format(Date())
         fileName = "audio_record_$date"
 
         filePath = "$dirPath$fileName.mp3"
@@ -510,26 +530,16 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
         buttonRecord.animation = blink
     }
 
-//    private fun showBottomSheet() {
-//        val bottomSheetFragment = BottomSheetFragment()
-//        bottomSheetFragment.show(parentFragmentManager, bottomSheetFragment.tag)
-//    }
-
     private fun getTimeString(duration: Int): String {
         val min = duration / 60
         val sec = duration % 60
         return String.format("%02d:%02d", min, sec)
     }
 
-//    override fun onBottomSheetExit() {
-//        // Reset the state when BottomSheet exits
-//        stopRecording()
-//    }
-
     override fun onTimerTick(duration: String) {
 //        println(duration)
         binding.tvTimer.text = duration
-        this.Duration = duration.dropLast(3)
+        this.duration_ = duration.dropLast(3)
         binding.waveFormView.addAmplitude(recorder.maxAmplitude.toFloat())
     }
 

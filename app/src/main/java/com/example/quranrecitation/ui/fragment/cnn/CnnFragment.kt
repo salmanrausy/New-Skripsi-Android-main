@@ -253,16 +253,14 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
         }
 
         buttonDone.setOnClickListener {
-            stopRecording()
-
             binding.progressBar.visibility = View.VISIBLE
-            prepareUploadSuara()
-
             binding.tvFileUpload.visibility = View.VISIBLE
             binding.waveFormView.visibility = View.GONE
             binding.ButtonDone.visibility = View.GONE
             binding.ButtonDelete.visibility = View.GONE
 
+            stopRecording()
+            prepareUploadSuara()
             uploadSuaraProcess()
         }
 
@@ -288,8 +286,15 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
         }
 
         buttonProses.setOnClickListener {
-            binding.tvFileUpload.text = getString(R.string.upload_dengan_file)
+            if (getFile != null) {
+                // Jika file sudah dipilih dari galeri, siapkan untuk diunggah
+                prepareUploadSuaraFromGallery(getFile!!)
+            } else {
+                // Jika tidak ada file yang dipilih, tampilkan pesan error atau lanjutkan dengan proses lain
+                Toast.makeText(requireContext(), "Pilih file terlebih dahulu.", Toast.LENGTH_SHORT).show()
+            }
         }
+
 
         tvUploadFile.setOnClickListener{
             startGallery()
@@ -308,6 +313,32 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
         return root
     }
 
+    private fun prepareUploadSuaraFromGallery(selectedFile: File) {
+        val requestSoundFile = selectedFile.asRequestBody("audio/*".toMediaTypeOrNull())
+
+        val soundMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
+            "file",
+            selectedFile.name,
+            requestSoundFile
+        )
+
+        reciteViewModel.uploadSuara(soundMultipart)
+    }
+
+    private fun prepareUploadFileFromGallery(file: File) {
+        // Konversi file ke RequestBody dan MultipartBody
+        val requestSoundFile = file.asRequestBody("audio/wav".toMediaTypeOrNull())
+        val soundMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
+            "file",
+            file.name,
+            requestSoundFile
+        )
+
+        // Panggil ViewModel untuk upload suara
+        reciteViewModel.uploadSuara(soundMultipart)
+    }
+
+
     private fun startGallery() {
         val intent = Intent()
         intent.action = Intent.ACTION_GET_CONTENT
@@ -323,11 +354,11 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
             val selectedAudio = result.data?.data as Uri
 
             selectedAudio.let { uri ->
-                activity.let {
-                    val myFile = uriToFile(uri, it)
+                activity?.let { activityContext ->
+                    // Konversi Uri menjadi file
+                    val myFile = uriToFile(uri, activityContext)
                     getFile = myFile
-                    // Menampilkan nama file atau informasi lainnya jika diperlukan
-                    // Misalnya menampilkan nama file audio
+                    // Tampilkan nama file atau informasi lain yang diperlukan
                     val fileName = myFile.name
                     binding.tvFileName.visibility = View.VISIBLE
                     binding.linearButton1.visibility = View.VISIBLE
@@ -335,10 +366,14 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
                     binding.tvFileUpload.text = "Pilih file yang lain"
                     binding.tvTimer.visibility = View.GONE
                     binding.LinearButton.visibility = View.GONE
+
+                    // Setelah memilih file, kita mempersiapkan upload suara
+                    prepareUploadFileFromGallery(myFile)
                 }
             }
         }
     }
+
 
     private fun prepareUploadSuara() {
         val requestSoundFile = File(filePath).asRequestBody("audio/wav".toMediaTypeOrNull())
@@ -383,6 +418,7 @@ class CnnFragment : Fragment(), Timer.OnTimerTickListener {
             }
         }
     }
+
 
     private fun toHasilPrediksi(responsePrediksi: ResponsePrediksi) {
         val intent = Intent(requireContext(), ResultActivity::class.java).apply {
